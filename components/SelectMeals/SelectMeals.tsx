@@ -1,21 +1,30 @@
 import React from "react";
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { MealPlan } from "@/models/types/booking";
 import { MealOptions } from "@/models/resource/meals";
 
 type SelectMealsProps = {
-    index: number
-    meals: MealPlan[]
-    setMeals: (meals: MealPlan[]) => void
-    date: Date
+  index: number;
+  meals: MealPlan[];
+  setMeals: (meals: MealPlan[]) => void;
+  date: Date;
 };
 
 const SelectMeals = ({ index, meals, setMeals, date }: SelectMealsProps) => {
-
-    const handleMealChange = (value: string) => {
-        setMeals([...meals.slice(0, index), { ...meals[index], meal: value, date }, ...meals.slice(index + 1)] as any);
-    };
+  const handleMealChange = (value: string) => {
+    setMeals([
+      ...meals.slice(0, index),
+      { ...meals[index], meal: value, date },
+      ...meals.slice(index + 1),
+    ]);
+  };
 
   return (
     <div key={index} className="space-y-2">

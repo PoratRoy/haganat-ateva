@@ -2,11 +2,16 @@ import {
   BookingGroup,
   DailyMealCount,
   DailyReport,
-  Guest,
-  MealPlan,
 } from "@/models/types/booking";
 
-export function calcReport(bookingGroups: BookingGroup[]): DailyReport[] {
+export function calcReport(groups: BookingGroup[]): DailyReport[] {
+  // Create a deep copy of the groups array and its contents
+  const bookingGroups: BookingGroup[] = groups.map((group) => ({
+    ...group,
+    guests: { ...group.guests },
+    meals: group.meals.map((meal) => ({ ...meal })),
+  }));
+
   // Find the earliest check-in and latest check-out dates
   const firstCheckIn = new Date(
     Math.min(...bookingGroups.map((bg) => bg.checkIn.getTime()))
@@ -26,43 +31,34 @@ export function calcReport(bookingGroups: BookingGroup[]): DailyReport[] {
       meals: [],
     };
 
-    const meals: MealPlan[] = [];
-    const guests: Guest[] = [];
+    const dailyMeals: DailyMealCount[] = [];
 
+    // Find all meals for the current day
     bookingGroups.map((group) => {
       group.meals.map((meal) => {
         if (meal.date.toDateString() === dailyReportDate.toDateString()) {
-          meals.push(meal);
-          guests.push(group.guests);
+          // check for duplicates
+          if (dailyMeals.find((m) => m.meal === meal.meal)) {
+            // if so, just add the guests
+            const index = dailyMeals.findIndex((m) => m.meal === meal.meal);
+            const dailyMealGuests = dailyMeals[index].guestCount;
+            dailyMealGuests.adults += group.guests.adults;
+            dailyMealGuests.teens += group.guests.teens;
+            dailyMealGuests.kids += group.guests.kids;
+          } else {
+            // if not, add the meal and guests
+            dailyMeals.push({
+              meal: meal.meal,
+              guestCount: group.guests,
+            });
+          }
         }
       });
     });
 
-    const dailyMeals: DailyMealCount[] = [];
-    const mealOptionsSet = new Set<any>();
-
-    meals.map((mealObj: MealPlan) => {
-      const meal = mealObj.meal as any;
-      if (!mealOptionsSet.has(meal)) {
-        mealOptionsSet.add(meal);
-        const guestsSum = guests.reduce((prev, guest) => {
-          return {
-            kids: prev.kids + guest.kids,
-            teens: prev.teens + guest.teens,
-            adults: prev.adults + guest.adults,
-          };
-        }, { kids: 0, teens: 0, adults: 0 });
-        dailyMeals.push({
-          meal,
-          guestCount: guestsSum,
-        });
-      }
-    });
-
     dailyReport.meals = dailyMeals;
-
     report.push(dailyReport);
-
+    // Move to the next day
     currentDate.setDate(currentDate.getDate() + 1);
   }
   return report;

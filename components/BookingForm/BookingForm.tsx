@@ -6,14 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookingGroup, Guest, MealPlan } from "@/models/types/booking";
+import { BookingGroup, Guests, MealPlan } from "@/models/types/booking";
 import SelectMeals from "../SelectMeals/SelectMeals";
 import { calcReport } from "@/lib/service";
 
 export default function BookingForm() {
   const [groups, setGroups] = useState<BookingGroup[]>([]);
   const [name, setName] = useState("");
-  const [guests, setGuests] = useState<Guest>({ kids: 0, teens: 0, adults: 0 });
+  const [guests, setGuests] = useState<Guests>({ kids: 0, teens: 0, adults: 0 });
   const [checkIn, setCheckIn] = useState<Date>();
   const [checkOut, setCheckOut] = useState<Date>();
   const [meals, setMeals] = useState<MealPlan[]>([]);
@@ -53,9 +53,8 @@ export default function BookingForm() {
   }
 
   const handleExport = () => {
-    // console.log("Exported Groups:", groups);
     const report = calcReport(groups);
-    // console.log("Report:", report);
+    console.log("Report:", report);
   };
 
   const nights = calculateNights();
@@ -181,6 +180,14 @@ export default function BookingForm() {
               <div className="text-sm text-gray-500">
                 {group.checkIn.toLocaleDateString()} -{" "}
                 {group.checkOut.toLocaleDateString()}
+              </div>
+              <br />
+              <div>
+                {group.meals.map((meal, index) => (
+                  <div key={index} className="text-sm text-gray-500">
+                    Day {index + 1}: {meal.meal}
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>

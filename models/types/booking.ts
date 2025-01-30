@@ -1,6 +1,6 @@
 import { MealOptions } from "../resource/meals";
 
-export interface Guest {
+export interface Guests {
   kids: number;
   teens: number;
   adults: number;
@@ -14,19 +14,15 @@ export interface MealPlan {
 export interface BookingGroup {
   id: string;
   name: string;
-  guests: Guest;
+  guests: Guests;
   checkIn: Date;
   checkOut: Date;
   meals: MealPlan[];
 }
 
 export interface DailyMealCount {
-  meal: (typeof MealOptions)[number];
-  guestCount: {
-    kids: number;
-    teens: number;
-    adults: number;
-  };
+  meal: string;
+  guestCount: Guests;
 }
 
 export interface DailyReport {
