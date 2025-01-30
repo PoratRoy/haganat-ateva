@@ -1,0 +1,1 @@
+export const MealOptions = ["BB", "HB", "היפוך", "ערב"] as const;
