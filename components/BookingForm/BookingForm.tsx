@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/Calendar/Calendar";
+import { Input } from "@/components/ui/Input/Input";
+import { Label } from "@/components/ui/Label/Label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card/Card";
 import { BookingGroup, Guests, MealPlan } from "@/models/types/booking";
 import SelectMeals from "../SelectMeals/SelectMeals";
 import { calcReport } from "@/lib/service";
+import { Button } from "../ui/Button/Button";
+import "./BookingForm.css";
 
 export default function BookingForm() {
   const [groups, setGroups] = useState<BookingGroup[]>([]);
@@ -60,14 +61,14 @@ export default function BookingForm() {
   const nights = calculateNights();
 
   return (
-    <div className="max-w-2xl mx-auto p-4 space-y-8">
+    <div className="booking-form-container">
       <Card>
         <CardHeader>
           <CardTitle>Add New Order</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="form-section">
           {/* Name Input */}
-          <div className="space-y-2">
+          <div className="form-group">
             <Label htmlFor="name">Order Name</Label>
             <Input
               id="name"
@@ -78,8 +79,8 @@ export default function BookingForm() {
           </div>
 
           {/* Guest Numbers */}
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
+          <div className="guests-grid">
+            <div className="form-group">
               <Label htmlFor="kids">Kids</Label>
               <Input
                 id="kids"
@@ -94,7 +95,7 @@ export default function BookingForm() {
                 }
               />
             </div>
-            <div className="space-y-2">
+            <div className="form-group">
               <Label htmlFor="teens">Teens</Label>
               <Input
                 id="teens"
@@ -109,7 +110,7 @@ export default function BookingForm() {
                 }
               />
             </div>
-            <div className="space-y-2">
+            <div className="form-group">
               <Label htmlFor="adults">Adults</Label>
               <Input
                 id="adults"
@@ -127,23 +128,23 @@ export default function BookingForm() {
           </div>
 
           {/* Date Selection */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <div className="dates-grid">
+            <div className="form-group">
               <Label>Check In</Label>
               <Calendar
                 mode="single"
                 selected={checkIn}
                 onSelect={setCheckIn}
-                className="border rounded-md"
+                className="calendar"
               />
             </div>
-            <div className="space-y-2">
+            <div className="form-group">
               <Label>Check Out</Label>
               <Calendar
                 mode="single"
                 selected={checkOut}
                 onSelect={setCheckOut}
-                className="border rounded-md"
+                className="calendar"
               />
             </div>
           </div>
@@ -167,24 +168,24 @@ export default function BookingForm() {
       </Card>
 
       {/* Groups List */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">List of Groups</h2>
+      <div className="groups-list">
+        <h2 className="group-title">List of Groups</h2>
         {groups.map((group) => (
           <Card key={group.id}>
-            <CardContent className="p-4">
-              <div className="font-medium">{group.name}</div>
-              <div className="text-sm text-gray-500">
+            <CardContent className="card-content">
+              <div className="group-name">{group.name}</div>
+              <div className="group-details">
                 Guests: {group.guests.kids} kids, {group.guests.teens} teens,{" "}
                 {group.guests.adults} adults
               </div>
-              <div className="text-sm text-gray-500">
+              <div className="group-details">
                 {group.checkIn.toLocaleDateString()} -{" "}
                 {group.checkOut.toLocaleDateString()}
               </div>
               <br />
               <div>
                 {group.meals.map((meal, index) => (
-                  <div key={index} className="text-sm text-gray-500">
+                  <div key={index} className="group-meal">
                     Day {index + 1}: {meal.meal}
                   </div>
                 ))}

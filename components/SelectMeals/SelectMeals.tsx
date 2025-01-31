@@ -1,14 +1,15 @@
 import React from "react";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/ui/Label/Label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select/Select";
 import { MealPlan } from "@/models/types/booking";
 import { MealOptions } from "@/models/resource/meals";
+import "./SelectMeals.css";
 
 type SelectMealsProps = {
   index: number;
@@ -27,7 +28,7 @@ const SelectMeals = ({ index, meals, setMeals, date }: SelectMealsProps) => {
   };
 
   return (
-    <div key={index} className="space-y-2">
+    <div key={index} className="select-meals-container">
       <Label>{`Meals for Day ${index + 1}`}</Label>
       <Select
         value={meals[index]?.meal}
